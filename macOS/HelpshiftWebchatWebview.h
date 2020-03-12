@@ -9,6 +9,7 @@
 #import <WebKit/WebKit.h>
 #import "HelpshiftWebchatDelegate.h"
 
+#define kChatLoadEvent @"chatLoad"
 #define kChatEndEvent @"chatEnd"
 #define kNewUnreadMessagesEvent @"newUnreadMessages"
 #define kUserChangedEvent @"userChanged"

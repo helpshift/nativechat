@@ -10,6 +10,7 @@
 
 @protocol HelpshiftWebchatDelegate <NSObject>
 
+- (void) chatLoad;
 - (void) chatEnd;
 - (void) conversationStart:(NSDictionary *) conversation;
 - (void) conversationEnd;

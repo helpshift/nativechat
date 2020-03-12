@@ -18,11 +18,9 @@
     if (self) {
         self->webview = [HelpshiftWebchatWebview sharedInstance];
         [self->webview setHelpshiftWebchatDelegate:self];
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self login];
-        });
+        [self->webview setUIDelegate:self];
     }
-    
+
     return self;
 }
 
@@ -32,17 +30,19 @@
 
 - (void) updateHelpshiftConfig {
     [self->webview updateHelpshiftConfig:@{
-                                           @"widgetOptions" : @{
-                                                   @"showLauncher" : @NO
-                                                   },
-                                           @"fullPrivacy" : @YES,
+//                                           @"widgetOptions" : @{
+//                                                   @"showLauncher" : @NO
+//                                                   },
+                                           @"uiConfig" : @{ @"global": @{
+                                                   @"color": @"#444"
+                                                   }},
                                            }];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do view setup here.
-    
+
     [self.view addSubview:self->webview];
     self->webview.translatesAutoresizingMaskIntoConstraints = false;
     [NSLayoutConstraint activateConstraints:@[
@@ -51,6 +51,17 @@
                                               [self.view.topAnchor constraintEqualToAnchor:self->webview.topAnchor],
                                               [self.view.bottomAnchor constraintEqualToAnchor:self->webview.bottomAnchor]
                                               ]];
+}
+
+- (void)chatLoad {
+    NSString *jsPath = [[NSBundle mainBundle] pathForResource:@"HelpshiftWebchatWrapper" ofType:@"js"];
+    NSString *jsCode = [NSString stringWithContentsOfFile:jsPath encoding:NSUTF8StringEncoding error:nil];
+    [self->webview evaluateJavaScript:jsCode completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"Error : %@", error);
+        }
+    }];
+    [self login];
 }
 
 - (void)chatEnd {
@@ -99,7 +110,7 @@
         [notification setDeliveryDate:[NSDate date]];
         //Set the sound, this can be either nil for no sound, NSUserNotificationDefaultSoundName for the default sound (tri-tone) and a string of a .caf file that is in the bundle (filname and extension)
         [notification setSoundName:NSUserNotificationDefaultSoundName];
-        
+
         //Get the default notification center
         NSUserNotificationCenter *center = [NSUserNotificationCenter defaultUserNotificationCenter];
         //Scheldule our NSUserNotification
@@ -112,4 +123,32 @@
 
 }
 
+- (void)webView:(WKWebView *)webView runOpenPanelWithParameters:(WKOpenPanelParameters *)parameters initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(NSArray<NSURL *> * _Nullable))completionHandler {
+    NSOpenPanel *openPanel = [[NSOpenPanel alloc] init];
+    openPanel.canChooseFiles = YES;
+    [openPanel beginWithCompletionHandler:^(NSModalResponse result) {
+        if (result == NSModalResponseOK && openPanel.URL) {
+            completionHandler(@[openPanel.URL]);
+        } else if (result == NSModalResponseCancel) {
+            completionHandler(nil);
+        }
+    }];
+}
+
+- (WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures {
+    NSViewController *viewController = [[NSViewController alloc] initWithNibName:nil bundle:nil];
+    WKWebView *downloadWebview = [[WKWebView alloc] initWithFrame:CGRectMake(0,0,400,400) configuration:configuration];
+    [downloadWebview loadRequest:navigationAction.request];
+    viewController.view = downloadWebview;
+
+    NSWindow *window = [[NSWindow alloc] init];
+    //set the window to be borderless
+    [window setStyleMask:NSWindowStyleMaskBorderless];
+
+    //show the window as modal
+    [window setContentViewController:viewController];
+    [window center];
+    [self presentViewControllerAsModalWindow:viewController];
+    return nil;
+}
 @end

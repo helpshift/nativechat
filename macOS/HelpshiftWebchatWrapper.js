@@ -1,18 +1,16 @@
 //  Copyright © 2019 Helpshift. All rights reserved.
 
-helpshiftConfig.widgetOptions = {
-    showCloseButton: false,
-    showLauncher: false,
-    fullScreen: true,
-};
-
-helpshiftConfig.uiConfig = {
-    global: {
-        color: "#444"
-    },
-};
-
-Helpshift('open');
+//helpshiftConfig.widgetOptions = {
+//    showCloseButton: false,
+//    showLauncher: false,
+//    fullScreen: true,
+//};
+//
+//window.helpshiftConfig.uiConfig = {
+//    global: {
+//        color: "#888"
+//    },
+//};
 
 var chatEndHandler = function () {
     window.webkit.messageHandlers.chatEnd.postMessage({});
@@ -39,7 +37,6 @@ var messageAddEventHandler = function (data) {
 
 }
 Helpshift("addEventListener", "messageAdd", messageAddEventHandler);
-
 
 var csatSubmitEventHandler = function (data) {
     window.webkit.messageHandlers.csatSubmit.postMessage(data);
@@ -68,5 +65,3 @@ var conversationReopenedEventHandler = function () {
     window.webkit.messageHandlers.conversationReopened.postMessage({});
 }
 Helpshift("addEventListener", "conversationReopened", conversationReopenedEventHandler);
-
-

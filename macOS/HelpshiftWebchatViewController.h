@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface HelpshiftWebchatViewController : NSViewController <HelpshiftWebchatDelegate>
+@interface HelpshiftWebchatViewController : NSViewController <HelpshiftWebchatDelegate, WKUIDelegate>
 {
     HelpshiftWebchatWebview *webview;
 }
