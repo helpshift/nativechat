@@ -6,6 +6,11 @@ With the release of version `2.4` of the Helpshift macOS SDK, we have officially
 In order to help you achieve this, we have put together a POC, and this document will help you migrate away from the macOS SDK while supporting all of the major use-cases of an in-app Customer support channel.
 
 ## Basic setup
+In order for the user to be able to continue his open conversations across app sessions, app will need to use a user login which is consistent with the user id being used in the app. In addition, Admins will need to enable Webchat Re-engagement via the Dashboard settings page. If you want to know how this is to be done, please refer to this link :
+[Webchat Re-engagement](https://support.helpshift.com/kb/article/how-do-i-make-my-web-chat-asynchronous/)
+
+For details on the login mechanism, please refer to the `HelpshiftWebchatViewController/login` method.
+
 ### Conversation only
 If you only want to show the conversation screen with Webchat, please follow the below instructions.
 
