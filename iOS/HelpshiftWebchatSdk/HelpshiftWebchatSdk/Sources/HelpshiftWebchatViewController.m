@@ -36,6 +36,15 @@ static CGFloat const kHeaderViewHeight = 50.0;
     [self->webview updateHelpshiftConfig:[PersistentData objectForKey:@"config"]];
 }
 
+- (void) updateCustomIssueFields {
+    NSDictionary *customIssueFieldsDictionary = @{
+        @"your_custom_key_1" : @"your_custom_value_1",
+        @"your_custom_key_2" : @"your_custom_value_2",
+    };
+    
+    [self->webview updateCustomIssueFields:customIssueFieldsDictionary];
+}
+
 - (void) setWebchatDelegate:(id<HelpshiftWebchatDelegate>) webchatDelegate {
     [self->webview setHelpshiftWebchatDelegate:webchatDelegate];
 }

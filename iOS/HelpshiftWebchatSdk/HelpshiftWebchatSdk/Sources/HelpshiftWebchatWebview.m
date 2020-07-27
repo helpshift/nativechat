@@ -105,6 +105,27 @@ NSString *jScript = @"(function () { var PLATFORM_ID = '%@',DOMAIN = '%@',LANGUA
      }];
 }
 
+- (void) updateCustomIssueFields:(NSDictionary *)customIssueFieldsDictionary {
+    NSError *error;
+    NSString *jsCode = nil;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:customIssueFieldsDictionary
+                                                       options:0
+                                                         error:&error];
+    
+    if(!jsonData) {
+        jsCode = @"";
+    } else {
+        NSString *cifJson = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        jsCode = [NSString stringWithFormat:@"Helpshift('replaceCustomIssueFields', %@);", cifJson];
+    }
+    
+    [self evaluateJavaScript:jsCode completionHandler:^(id _Nullable result, NSError *_Nullable error) {
+        if(error) {
+            NSLog(@"Error : %@", error);
+        }
+    }];
+}
+
 - (void) setHelpshiftWebchatDelegate:(id<HelpshiftWebchatDelegate>)delegate {
     self->scriptMessageHandler.webchatDelegate = delegate;
 }

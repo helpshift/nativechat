@@ -29,6 +29,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void) updateHelpshiftConfig:(NSDictionary *)configDictionary;
 
+- (void) updateCustomIssueFields:(NSDictionary *)customIssueFieldsDictionary;
+
 - (void) setHelpshiftWebchatDelegate:(id<HelpshiftWebchatDelegate>)delegate;
 
 @end
