@@ -53,8 +53,14 @@ NSString *jScript = @"(function () { var PLATFORM_ID = '%@',DOMAIN = '%@',LANGUA
          NOTE: This script should be added at the end only as demonstrated here.
          */
         NSDictionary *customIssueFieldsDictionary = @{
-                                                      @"your_custom_key_1" : @"your_custom_value_1",
-                                                      @"your_custom_key_2" : @"your_custom_value_2",
+                                                      @"joining_date": @{
+                                                              @"type": @"dt",
+                                                              @"value": @"1505927361535"
+                                                              },
+                                                      @"employee_name": @{
+                                                              @"type": @"sl",
+                                                              @"value": @"abc"
+                                                              }
                                                       };
         NSData *cifJsonData = [NSJSONSerialization dataWithJSONObject:customIssueFieldsDictionary
                                                               options:0
