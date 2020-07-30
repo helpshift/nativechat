@@ -47,6 +47,29 @@ NSString *jScript = @"(function () { var PLATFORM_ID = '%@',DOMAIN = '%@',LANGUA
                                                              injectionTime:WKUserScriptInjectionTimeAtDocumentEnd
                                                           forMainFrameOnly:YES];
 
+        /*
+         Below code demonstrates the addition of custom issue fields.
+         `customIssueFieldsDictionary` is a dictionary which you can replace with your custom issue fields.
+         NOTE: This script should be added at the end only as demonstrated here.
+         */
+        NSDictionary *customIssueFieldsDictionary = @{
+                                                      @"your_custom_key_1" : @"your_custom_value_1",
+                                                      @"your_custom_key_2" : @"your_custom_value_2",
+                                                      };
+        NSData *cifJsonData = [NSJSONSerialization dataWithJSONObject:customIssueFieldsDictionary
+                                                              options:0
+                                                                error:&error];
+        NSString *cifJsCode = nil;
+        if(!cifJsonData) {
+            cifJsCode = @"";
+        } else {
+            NSString *cifJson = [[NSString alloc] initWithData:cifJsonData encoding:NSUTF8StringEncoding];
+            cifJsCode = [NSString stringWithFormat:@"Helpshift('replaceCustomIssueFields', %@);", cifJson];
+        }
+        
+        WKUserScript *cifScript = [[WKUserScript alloc] initWithSource:cifJsCode
+                                                         injectionTime:WKUserScriptInjectionTimeAtDocumentEnd
+                                                      forMainFrameOnly:NO];
         WKWebViewConfiguration *configuration = [[WKWebViewConfiguration alloc] init];
         WKUserContentController *contentController = [[WKUserContentController alloc] init];
 
@@ -57,6 +80,7 @@ NSString *jScript = @"(function () { var PLATFORM_ID = '%@',DOMAIN = '%@',LANGUA
             [contentController addUserScript:script];
         }
         [contentController addUserScript:wrapperScript];
+        [contentController addUserScript:cifScript]; //Add the cif script here.
         configuration.userContentController = contentController;
 
         HelpshiftWebchatScriptMessageHandler *scriptMessageHandler = [[HelpshiftWebchatScriptMessageHandler alloc] init];
